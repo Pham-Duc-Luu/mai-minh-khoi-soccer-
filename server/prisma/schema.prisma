@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model coach {
+  coachid   String      @id @db.VarChar
+  name      String      @db.VarChar
+  ex        String?     @db.VarChar
+  nation    String?     @db.VarChar
+  huanluyen huanluyen[]
+}
+
+model huanluyen {
+  coachid_teamid String @id @db.VarChar
+  year           String @db.VarChar
+  coachid        String @db.VarChar
+  teamid         String @db.VarChar
+  coach          coach  @relation(fields: [coachid], references: [coachid], onDelete: NoAction, onUpdate: NoAction, map: "fk_huanluyen_coach")
+  team           team   @relation(fields: [teamid], references: [teamid], onDelete: NoAction, onUpdate: NoAction, map: "fk_huanluyen_team")
+}
+
+model league {
+  leagueid String    @id @db.VarChar
+  name     String    @db.VarChar
+  quantity String    @db.VarChar
+  match    match[]
+  thamgia  thamgia[]
+  vodich   vodich[]
+}
+
+model match {
+  matchid                  String    @id @db.VarChar
+  ngay                     DateTime? @db.Date
+  win                      String?   @db.VarChar
+  teamid1                  String    @db.VarChar
+  teamid2                  String    @db.VarChar
+  results                  String?   @db.VarChar
+  leagueid                 String    @db.VarChar
+  stadiumid                String    @db.VarChar
+  league                   league    @relation(fields: [leagueid], references: [leagueid], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_league")
+  stadium                  stadium   @relation(fields: [stadiumid], references: [stadiumid], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_stadium")
+  team_match_teamid1Toteam team      @relation("match_teamid1Toteam", fields: [teamid1], references: [teamid], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_team1")
+  team_match_teamid2Toteam team      @relation("match_teamid2Toteam", fields: [teamid2], references: [teamid], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_team2")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model player {
+  playerid String    @id @db.VarChar
+  name     String?   @db.VarChar
+  position String?   @db.VarChar
+  weight   String?   @db.VarChar
+  height   String?   @db.VarChar
+  dob      DateTime? @db.Date
+  nation   String?   @db.VarChar
+  thidau   thidau[]
+}
+
+model stadium {
+  stadiumid String  @id @db.VarChar
+  name      String  @db.VarChar
+  address   String  @db.VarChar
+  match     match[]
+  team      team[]
+}
+
+model team {
+  teamid                    String      @id @db.VarChar
+  name                      String      @db.VarChar
+  city                      String?     @db.VarChar
+  country                   String?     @db.VarChar
+  dof                       DateTime    @db.Date
+  stadiumid                 String?     @db.VarChar
+  huanluyen                 huanluyen[]
+  match_match_teamid1Toteam match[]     @relation("match_teamid1Toteam")
+  match_match_teamid2Toteam match[]     @relation("match_teamid2Toteam")
+  stadium                   stadium?    @relation(fields: [stadiumid], references: [stadiumid], onDelete: NoAction, onUpdate: NoAction, map: "fk_team_stadium")
+  thamgia                   thamgia[]
+  thidau                    thidau[]
+  vodich                    vodich[]
+}
+
+model thamgia {
+  teamid_leagueid String @id @db.VarChar
+  year            String @db.VarChar
+  teamid          String @db.VarChar
+  leagueid        String @db.VarChar
+  league          league @relation(fields: [leagueid], references: [leagueid], onDelete: NoAction, onUpdate: NoAction, map: "fk_thamgia_league")
+  team            team   @relation(fields: [teamid], references: [teamid], onDelete: NoAction, onUpdate: NoAction, map: "fk_thamgia_team")
+}
+
+model thidau {
+  playerid_teamid String @id @db.VarChar
+  year            String @db.VarChar
+  playerid        String @db.VarChar
+  teamid          String @db.VarChar
+  value           String @db.VarChar
+  player          player @relation(fields: [playerid], references: [playerid], onDelete: NoAction, onUpdate: NoAction, map: "fk_thidau_player")
+  team            team   @relation(fields: [teamid], references: [teamid], onDelete: NoAction, onUpdate: NoAction, map: "fk_thidau_team")
+}
+
+model vodich {
+  leagueid String @db.VarChar
+  teamid   String @db.VarChar
+  year     String @db.VarChar
+  id       String @id @db.VarChar
+  league   league @relation(fields: [leagueid], references: [leagueid], onDelete: NoAction, onUpdate: NoAction, map: "fk_vodich_league")
+  team     team   @relation(fields: [teamid], references: [teamid], onDelete: NoAction, onUpdate: NoAction, map: "fk_vodich_team")
+}
