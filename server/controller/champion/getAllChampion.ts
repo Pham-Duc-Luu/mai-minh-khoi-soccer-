@@ -18,6 +18,7 @@ export const getAllChampion  = async (req : Request, res :Response) => {
 
         return res.status(200).json({errCode:0, data: champions})
 
+        
     } catch (error) {
        return  res.status(404).json({errCode : -1, message: "Error forom server!"})
     }
