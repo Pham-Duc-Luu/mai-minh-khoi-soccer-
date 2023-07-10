@@ -20,14 +20,16 @@ const getCoachByName = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         let { name } = req.body;
         if (!name) {
-            return res.status(200).json({ errCode: 1, message: 'Missing parameter!' });
+            return res
+                .status(200)
+                .json({ errCode: 1, message: "Missing parameter!" });
         }
         const coach = yield pgClient_1.default.query(`select * from coach where name LIKE '%${name}%'`);
         const data = yield Promise.all(coach.rows.map((item) => __awaiter(void 0, void 0, void 0, function* () {
             let coach = yield prisma.coach.findUnique({
                 where: {
-                    coachid: item.coachid
-                }
+                    coachid: item.coachid,
+                },
             });
             return coach;
         })));

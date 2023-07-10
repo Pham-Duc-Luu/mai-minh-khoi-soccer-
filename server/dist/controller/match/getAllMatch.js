@@ -9,26 +9,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllTeam = void 0;
+exports.getAllMatch = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
-const getAllTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllMatch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const teams = yield prisma.team.findMany({
+        const champions = yield prisma.match.findMany({
             include: {
-                huanluyen: true,
-                vodich: true,
-                thamgia: true,
+                league: true,
                 stadium: true,
+                team_match_teamid1Toteam: true,
+                team_match_teamid2Toteam: true,
             },
         });
-        return res.status(200).json({ errCode: 0, data: teams });
+        return res.status(200).json({ errCode: 0, data: champions });
     }
     catch (error) {
-        console.log(error);
         return res
             .status(404)
             .json({ errCode: -1, message: "Error forom server!" });
     }
 });
-exports.getAllTeam = getAllTeam;
+exports.getAllMatch = getAllMatch;

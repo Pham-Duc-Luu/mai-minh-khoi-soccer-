@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import Masonry from "@mui/lab/Masonry";
+import axios from "axios";
 
 const heights = [
   150, 30, 90, 70, 110, 150, 130, 80, 50, 90, 100, 150, 30, 50, 80,
@@ -19,18 +20,27 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Home() {
+  const [teams, setteams] = React.useState([]);
+
+  axios({
+    method: "get",
+    url: "http://localhost:8080/v1/getAllTeam",
+    baseURL: process.env.BACKEND,
+  }).then((res) => {
+    setteams(res.data.data);
+  });
+
   return (
     <Box sx={{ margin: 2 }}>
       <Masonry
         columns={{ xs: 2, sm: 3, md: 5 }}
         spacing={{ xs: 1, sm: 2, md: 3 }}
       >
-        {heights.map((height, index) => (
+        {teams.map((item, index) => (
           <Item sx={{}} key={index}>
-            <Box>Name</Box>
-            <Box>City : Standford</Box>
-            <Box>Stadiun: Stadiun</Box>
-            <Box>Height: Height</Box>
+            <Box sx={{ fontSize: 20, fontWeight: 700 }}>{item?.name}</Box>
+            <Box>City : {item?.city}</Box>
+            <Box>Stadiun: {item?.stadium?.name}</Box>
           </Item>
         ))}
       </Masonry>

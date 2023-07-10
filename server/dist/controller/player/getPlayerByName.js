@@ -13,35 +13,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPlayerByName = void 0;
+const client_1 = require("@prisma/client");
 const pgClient_1 = __importDefault(require("../../config/pgClient"));
+const prisma = new client_1.PrismaClient();
 const getPlayerByName = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let { name } = req.body;
         if (!name) {
-            return res.status(200).json({ errCode: 1, message: 'Missing parameter!' });
+            return res
+                .status(200)
+                .json({ errCode: 1, message: "Missing parameter!" });
         }
-        const players = yield pgClient_1.default.query(`select * from player where name LIKE '%a%'`);
+        const players = yield pgClient_1.default.query(`select * from player where name LIKE '%${name}%'`);
         const data = yield Promise.all(players.rows.map((item) => __awaiter(void 0, void 0, void 0, function* () {
             let player = yield prisma.player.findUnique({
                 where: {
-                    playerid: item.playerid
+                    playerid: item.playerid,
                 },
                 include: {
                     thidau: {
                         include: {
-                            team: true
-                        }
-                    }
-                }
+                            team: true,
+                        },
+                    },
+                },
             });
             return player;
         })));
         return res.status(200).json({
-            errCode: 0, data: data
+            errCode: 0,
+            data: data,
         });
     }
     catch (error) {
-        res.status(404).json({ errCode: -1, message: 'Error from server!' });
+        res.status(404).json({ errCode: -1, message: "Error from server!" });
     }
 });
 exports.getPlayerByName = getPlayerByName;

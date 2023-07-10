@@ -4,21 +4,19 @@ import pool from "../../config/pgClient";
 
 const prisma = new PrismaClient();
 
-export const getAllTeam = async (req: Request, res: Response) => {
+export const getAllMatch = async (req: Request, res: Response) => {
   try {
-    const teams = await prisma.team.findMany({
+    const champions = await prisma.match.findMany({
       include: {
-        huanluyen: true,
-        vodich: true,
-        thamgia: true,
+        league: true,
         stadium: true,
+        team_match_teamid1Toteam: true,
+        team_match_teamid2Toteam: true,
       },
     });
 
-    return res.status(200).json({ errCode: 0, data: teams });
+    return res.status(200).json({ errCode: 0, data: champions });
   } catch (error) {
-    console.log(error);
-
     return res
       .status(404)
       .json({ errCode: -1, message: "Error forom server!" });
