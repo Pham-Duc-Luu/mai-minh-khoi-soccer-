@@ -6,6 +6,7 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import Masonry from "@mui/lab/Masonry";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const heights = [
   150, 30, 90, 70, 110, 150, 130, 80, 50, 90, 100, 150, 30, 50, 80,
@@ -30,6 +31,8 @@ export default function Home() {
     setteams(res.data.data);
   });
 
+  const router = useRouter();
+
   return (
     <Box sx={{ margin: 2 }}>
       <Masonry
@@ -37,7 +40,13 @@ export default function Home() {
         spacing={{ xs: 1, sm: 2, md: 3 }}
       >
         {teams.map((item, index) => (
-          <Item sx={{}} key={index}>
+          <Item
+            sx={{ cursor: "pointer" }}
+            key={index}
+            onClick={() => {
+              router.push(`/dashboard/team/${item.teamid}`);
+            }}
+          >
             <Box sx={{ fontSize: 20, fontWeight: 700 }}>{item?.name}</Box>
             <Box>City : {item?.city}</Box>
             <Box>Stadiun: {item?.stadium?.name}</Box>

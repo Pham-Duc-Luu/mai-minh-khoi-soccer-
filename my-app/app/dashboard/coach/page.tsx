@@ -7,6 +7,7 @@ import Paper from "@mui/material/Paper";
 import Masonry from "@mui/lab/Masonry";
 import axios from "axios";
 import TextField from "@mui/material/TextField";
+import { useRouter } from "next/navigation";
 
 const heights = [
   150, 30, 90, 70, 110, 150, 130, 80, 50, 90, 100, 150, 30, 50, 80,
@@ -54,6 +55,8 @@ export default function Home() {
     });
   }
 
+  const router = useRouter();
+
   return (
     <Box sx={{ margin: 2 }}>
       <TextField
@@ -74,7 +77,13 @@ export default function Home() {
         spacing={{ xs: 1, sm: 2, md: 3 }}
       >
         {coaches.map((item, index) => (
-          <Item sx={{}} key={index}>
+          <Item
+            sx={{ cursor: "pointer" }}
+            key={index}
+            onClick={() => {
+              router.push(`/dashboard/coach/${item.coachid}`);
+            }}
+          >
             <Box sx={{ fontSize: 20, fontWeight: 600 }}>{item?.name}</Box>
             <Box>Ex : {item?.ex}</Box>
             <Box>Nation : {item?.nation}</Box>

@@ -7,6 +7,7 @@ import Paper from "@mui/material/Paper";
 import Masonry from "@mui/lab/Masonry";
 import axios from "axios";
 import TextField from "@mui/material/TextField";
+import { useRouter } from "next/navigation";
 
 const heights = [
   150, 30, 90, 70, 110, 150, 130, 80, 50, 90, 100, 150, 30, 50, 80,
@@ -22,6 +23,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function Player() {
   const [players, setPlayers] = React.useState([]);
+
+  const router = useRouter();
 
   React.useEffect(() => {
     axios({
@@ -75,7 +78,15 @@ export default function Player() {
         spacing={{ xs: 1, sm: 2, md: 3 }}
       >
         {players?.map((item, index) => (
-          <Item sx={{}} key={index}>
+          <Item
+            sx={{ cursor: "pointer" }}
+            key={index}
+            onClick={() => {
+              if (item?.playerid) {
+                router.push(`/dashboard/player/${item?.playerid}`);
+              }
+            }}
+          >
             <Box sx={{ fontSize: 20, fontWeight: 800, margin: 4 }}>
               {item?.name}
             </Box>

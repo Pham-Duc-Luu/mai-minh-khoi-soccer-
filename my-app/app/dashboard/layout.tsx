@@ -35,7 +35,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import SportsIcon from "@mui/icons-material/Sports";
 import Groups2Icon from "@mui/icons-material/Groups2";
 import ScoreboardIcon from "@mui/icons-material/Scoreboard";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 function Copyright(props: any) {
   return (
@@ -120,6 +120,10 @@ export default function DashboardLayout({
 
   const router = useRouter();
 
+  const pathname = usePathname();
+
+  console.log(pathname.split("/"));
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
@@ -149,7 +153,7 @@ export default function DashboardLayout({
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              {pathname.split("/")[2]}
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
